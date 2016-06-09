@@ -1,0 +1,5 @@
+class BaseObserver {
+	notify(dataToNotify) {
+		
+	}
+}
