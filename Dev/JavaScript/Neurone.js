@@ -1,62 +1,36 @@
-class Neurone {
-	constructor(weights = [], transfert = v => -1, observer = undefined) {
-		this._weights = weights;
-		this._transfert = transfert;
-		this._observer = observer;
-	}
 
-	// Public methods
+class Neurone
+{
+    constructor(nbEntrees)
+    {
+        this.nbEntrees = nbEntrees;
+        this.Sortie = NaN;
+        this.poids = [];
 
-	execute(inputs) {
-		if (this._transfert === null || this._transfert === undefined || typeof this._transfert !== "function") {
-			throw new Exception("Internal neurone error: no transfert function", `Neurone has no transfert function`);
-		}
+        for (var i = 0; i <= nbEntrees; i++) {
+            this.poids[i] = Math.floor((Math.random() * 2) - 1);
+        }
+    }
 
-		var composedInput = this._composition(inputs);
+    Evaluer(entrees=[])
+    {
+        if (isNaN(this.sortie)) 
+        {
+            var composee = 0.0;
 
-		var result = this._transfert(composedInput);
+            for (var i = 0; i < this.nbEntrees; i++) {
+                composee += this.poids[i] * entrees[i];
+            }
+            composee += this.poids[this.nbEntrees];
 
-		this._notify(`composed: ${composedInput}, result: ${result}`);
+            this.Sortie = 1.0 / (1.0 + Math.exp(-1.0 * composee));
+        }
 
-		return result;
-	}
+        return this.Sortie;
+    }
 
-	// Private methods
-
-	_composition(inputs) {
-		var combinedValue = 0;
-
-		if (inputs.length !== this._weights.length) {
-			throw new Exception("Bad parameter: inputs", `Argument inputs must be a ${this._weights.length}-values array, ${inputs.length}-values array given instead`);
-		}
-
-		for (var i = 0; i < this._weights.length; i++) {
-			if (typeof inputs[i] !== "number") {
-				throw new Exception("Bad parameter: inputs", `Argument index ${i}: ${inputs[i]} is not a number`);
-			}
-
-			combinedValue += inputs[i] * this._weights[i];
-		}
-
-		return combinedValue;
-	}
-
-	_notify(dataToNotify) {
-		if (this._observer !== null && this._observer !== undefined && this._observer instanceof BaseObserver) {
-			this._observer.notify(dataToNotify);
-		}
-	}
-
-	// Accessors
-
-	set weights(value) { this._weights = value; }
-	get weights() { return this._weights; }
-
-	get transfert() { return this._transfert; }
-	set transfert(value) { this._transfert = value; }
-
-	get observer() { return this._observer; }
-	set observer(value) { this._observer = value; }	
-
-	get argumentsCount() { return this._weights.length; }
+    Vider()
+    {
+        this.Sortie = NaN;
+    }
 }
